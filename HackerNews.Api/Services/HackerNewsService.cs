@@ -21,7 +21,7 @@ namespace HackerNews.Api.Services
                 var storyIds = JsonConvert.DeserializeObject<List<int>>(response);
 
                 var tasks = new List<Task<Story>>();
-                foreach (var storyId in storyIds.Take(10)) {
+                foreach (var storyId in storyIds.Take(100)) {
                     tasks.Add(GetStoryAsync(storyId));
                 }
 
