@@ -1,0 +1,14 @@
+@HackerNews.Api_HostAddress = https://localhost:7166
+
+GET {{HackerNews.Api_HostAddress}}/api/GetWeatherForecast/
+Accept: application/json
+
+###
+
+GET {{HackerNews.Api_HostAddress}}/api/weatherforecast
+
+###
+
+GET {{HackerNews.Api_HostAddress}}/api/hackernews
+
+###
