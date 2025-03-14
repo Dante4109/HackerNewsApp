@@ -6,22 +6,36 @@
   placeholder="Search stories"
   (change)="onSearch()"
 />
-<div *ngFor="let story of paginatedStories">
-  <a *ngIf="story.url" [href]="story.url" target="_blank">{{ story.title }}</a>
-  <p *ngIf="!story.url">{{ story.title }}</p>
+
+<div *ngIf="isLoading; else dataContent">
+  <p>Loading...</p>
 </div>
 
-<div>
-  <button
-    (click)="currentPage = currentPage - 1"
-    [disabled]="currentPage === 1"
-  >
-    Previous
-  </button>
-  <button
-    (click)="currentPage = currentPage + 1"
-    [disabled]="currentPage * itemsPerPage >= stories.length"
-  >
-    Next
-  </button>
-</div>
+<ng-template #dataContent>
+  <div *ngIf="errorMessage; else showData">
+    <p>{{ errorMessage }}</p>
+  </div>
+  <ng-template #showData>
+    <div *ngFor="let story of paginatedStories">
+      <a *ngIf="story.url" [href]="story.url" target="_blank">{{
+        story.title
+      }}</a>
+      <p *ngIf="!story.url">{{ story.title }}</p>
+    </div>
+  </ng-template>
+
+  <div>
+    <button
+      (click)="currentPage = currentPage - 1"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+    <button
+      (click)="currentPage = currentPage + 1"
+      [disabled]="currentPage * itemsPerPage >= stories.length"
+    >
+      Next
+    </button>
+  </div>
+</ng-template>

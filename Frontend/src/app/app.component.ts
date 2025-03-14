@@ -11,6 +11,8 @@ export class AppComponent implements OnInit {
   stories: any[] = [];
   currentPage = 1;
   itemsPerPage = 10;
+  isLoading = true;
+  errorMessage: string = '';
   searchQuery: string = '';
 
   constructor(private hackerNewsService: ApiService) {}
@@ -24,16 +26,19 @@ export class AppComponent implements OnInit {
   }
 
   loadStories(): void {
-    this.hackerNewsService.getNewestStories().subscribe((data: any) => {
-      this.stories = data;
+    this.hackerNewsService.getNewestStories().subscribe({
+      next: (data: any) => {
+        this.stories = data;
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        this.errorMessage = 'Error fetching data.';
+        this.isLoading = false;
+      },
     });
   }
 
   onSearch(): void {
-    /* this.stories = this.stories.filter((story) => {
-      return story.title.includes(this.searchQuery);
-    }); */
-
     this.hackerNewsService.getNewestStories().subscribe((data: any) => {
       this.stories = data.filter((story: { title: string | string[] }) => {
         return story.title.includes(this.searchQuery);
