@@ -1,5 +1,11 @@
-<p>Test</p>
+<h1>HackerNews</h1>
 
+<input
+  type="text"
+  [(ngModel)]="searchQuery"
+  placeholder="Search stories"
+  (change)="onSearch()"
+/>
 <div *ngFor="let story of paginatedStories">
   <a *ngIf="story.url" [href]="story.url" target="_blank">{{ story.title }}</a>
   <p *ngIf="!story.url">{{ story.title }}</p>

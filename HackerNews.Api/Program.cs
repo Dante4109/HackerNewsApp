@@ -14,10 +14,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", // Replace with your policy name
         policy => {
-            policy.WithOrigins("http://localhost:4200", "http://example.com") // Replace with allowed origins
+            policy.WithOrigins("http://localhost:4200", "*") // Replace with allowed origins
+                .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials(); // Add this if you need to send credentials
+                .AllowAnyHeader();
         });
 });
 
