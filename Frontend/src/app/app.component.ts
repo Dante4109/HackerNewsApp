@@ -44,8 +44,6 @@ export class AppComponent implements OnInit {
         return story.title.includes(this.searchQuery);
       });
     });
-
-    console.log(this.stories);
   }
 
   ngOnInit() {

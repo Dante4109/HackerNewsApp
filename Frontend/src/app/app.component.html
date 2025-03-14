@@ -6,6 +6,7 @@
   placeholder="Search stories"
   (change)="onSearch()"
 />
+<button (click)="onSearch()">Search</button>
 
 <div *ngIf="isLoading; else dataContent">
   <p>Loading...</p>
@@ -17,10 +18,15 @@
   </div>
   <ng-template #showData>
     <div *ngFor="let story of paginatedStories">
-      <a *ngIf="story.url" [href]="story.url" target="_blank">{{
-        story.title
-      }}</a>
-      <p *ngIf="!story.url">{{ story.title }}</p>
+      <div>
+        <p>
+          {{ story.title }}
+          <a *ngIf="story.url" [href]="story.url" target="_blank"
+            >click here to view</a
+          >
+          <a *ngIf="!story.url">link not avaiable</a>
+        </p>
+      </div>
     </div>
   </ng-template>
 
