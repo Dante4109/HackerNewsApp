@@ -1,0 +1,6 @@
+@baseUrl = https://hacker-news.firebaseio.com/v0/item
+@storyId = 43357856  
+
+// https://hacker-news.firebaseio.com/v0/item/43357856.json?print=pretty
+
+Get {{baseUrl}}/{{storyId}}.json?print=pretty
