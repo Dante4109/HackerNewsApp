@@ -41,12 +41,12 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the title on load', () => {
-    fixture.detectChanges(); // Trigger initial change detection
-    const titleElement = fixture.debugElement.query(By.css('.header-title')); // Adjust selector as needed
-    expect(titleElement).toBeTruthy(); // Ensures the element exists
-    expect(titleElement.nativeElement.offsetParent).not.toBeNull(); // Checks if it's visible (not `display: none`)
-    expect(titleElement.nativeElement.textContent).toEqual('Hacker News'); // Checks if it's visible (not `display: none`)
+  it('should display the title "Hacker News" on load', () => {
+    fixture.detectChanges();
+    const titleElement = fixture.debugElement.query(By.css('.header-title'));
+    expect(titleElement).toBeTruthy();
+    expect(titleElement.nativeElement.offsetParent).not.toBeNull();
+    expect(titleElement.nativeElement.textContent).toEqual('Hacker News');
   });
 
   it('should fetch newest stories from ApiService onInit', () => {
@@ -64,19 +64,22 @@ describe('AppComponent', () => {
   });
 
   it('should display an error message when errorMessage is set', () => {
-    component.errorMessage = 'Error fetching data';
+    component.errorMessage =
+      'Failed to fetch newest stories. Please try again later.';
     fixture.detectChanges();
     const errorElement = fixture.debugElement.query(By.css('p'));
     expect(errorElement.nativeElement.textContent).toContain(
-      'Error fetching data'
+      'Failed to fetch newest stories. Please try again later.'
     );
   });
 
   it('should disable Previous button on first page after data has loaded', () => {
     component.currentPage = 1;
     fixture.detectChanges();
-    const prevButton = fixture.debugElement.query(By.css('button.btnPrev'));
-    const nextButton = fixture.debugElement.query(By.css('button.btnNext'));
+    const prevButton = fixture.debugElement.query(
+      By.css('button.button-previous')
+    );
+    const nextButton = fixture.debugElement.query(By.css('button.button-next'));
     expect(prevButton.nativeElement.disabled).toBeTrue();
     expect(nextButton.nativeElement.disabled).toBeFalse();
   });
@@ -92,7 +95,7 @@ describe('AppComponent', () => {
   });
 
   it('should display the next 10 stories when next button is clicked', () => {
-    const nextButton = fixture.debugElement.query(By.css('button.btnNext'));
+    const nextButton = fixture.debugElement.query(By.css('button.button-next'));
     nextButton.triggerEventHandler('click', null);
     fixture.detectChanges();
     const storyElements = fixture.debugElement.queryAll(By.css('p'));
@@ -106,7 +109,7 @@ describe('AppComponent', () => {
 
   it('should call onSearch when search button is clicked', () => {
     spyOn(component, 'onSearch');
-    const button = fixture.debugElement.query(By.css('button.btnSearch'));
+    const button = fixture.debugElement.query(By.css('button.button-search'));
     button.triggerEventHandler('click', null);
     expect(component.onSearch).toHaveBeenCalled();
   });
@@ -114,9 +117,9 @@ describe('AppComponent', () => {
   it('should enter "Story 30" into the search form and press the search button', () => {
     spyOn(component, 'onSearch');
     const input = fixture.debugElement.query(
-      By.css('input.frmSearch')
+      By.css('input.form-search')
     ).nativeElement;
-    const button = fixture.debugElement.query(By.css('button.btnSearch'));
+    const button = fixture.debugElement.query(By.css('button.button-search'));
     input.value = 'Story 30';
     input.dispatchEvent(new Event('input'));
     button.triggerEventHandler('click', null);
@@ -125,16 +128,18 @@ describe('AppComponent', () => {
     expect(component.searchQuery).toBe('Story 30');
   });
 
-  it(`should display only Story 25 when "Story 25" is typed in the search form 
+  it(`should display only Story 25 when "Story 25" is typed in the search form
     and the search button is pressed`, () => {
     spyOn(component, 'onSearch').and.callThrough();
     const input = fixture.debugElement.query(
-      By.css('input.frmSearch')
+      By.css('input.form-search')
     ).nativeElement;
     input.value = 'Story 25';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
-    const searchButton = fixture.debugElement.query(By.css('button.btnSearch'));
+    const searchButton = fixture.debugElement.query(
+      By.css('button.button-search')
+    );
     searchButton.triggerEventHandler('click', null);
     fixture.detectChanges();
     const storyElements = fixture.debugElement.queryAll(By.css('p'));
@@ -144,9 +149,32 @@ describe('AppComponent', () => {
     expect(story1ElementText).toEqual(' Story 25 click here to view');
   });
 
+  it(`should display "No stories found" when the search data in the search form
+    does not match the title of any story that has beed loaded into memory`, () => {
+    spyOn(component, 'onSearch').and.callThrough();
+    const input = fixture.debugElement.query(
+      By.css('input.form-search')
+    ).nativeElement;
+    input.value = 'asfasgadrdhadh';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    const searchButton = fixture.debugElement.query(
+      By.css('button.button-search')
+    );
+    searchButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    const elements = fixture.debugElement.queryAll(By.css('p'));
+    const elementText = elements[0].nativeElement.textContent;
+    expect(elements.length).toBeGreaterThan(0);
+    expect(elements.length).toBeLessThan(2);
+    expect(elementText).toEqual('No stories found');
+  });
+
   it('should disable Previous button on first page', () => {
-    const prevButton = fixture.debugElement.query(By.css('button.btnPrev'));
-    const nextButton = fixture.debugElement.query(By.css('button.btnNext'));
+    const prevButton = fixture.debugElement.query(
+      By.css('button.button-previous')
+    );
+    const nextButton = fixture.debugElement.query(By.css('button.button-next'));
     expect(prevButton.nativeElement.disabled).toBeTrue();
     expect(nextButton.nativeElement.disabled).toBeFalse();
   });
@@ -154,8 +182,10 @@ describe('AppComponent', () => {
   it('should disable Next button when on the last page', () => {
     component.currentPage = 10;
     fixture.detectChanges();
-    const prevButton = fixture.debugElement.query(By.css('button.btnPrev'));
-    const nextButton = fixture.debugElement.query(By.css('button.btnNext'));
+    const prevButton = fixture.debugElement.query(
+      By.css('button.button-previous')
+    );
+    const nextButton = fixture.debugElement.query(By.css('button.button-next'));
     expect(prevButton.nativeElement.disabled).toBeFalse();
     expect(nextButton.nativeElement.disabled).toBeTrue();
   });

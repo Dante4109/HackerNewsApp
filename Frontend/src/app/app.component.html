@@ -1,13 +1,13 @@
 <h1 class="header-title">Hacker News</h1>
 
 <input
-  class="frmSearch"
+  class="form-search"
   type="text"
   [(ngModel)]="searchQuery"
   placeholder="Search stories"
   (change)="onSearch()"
 />
-<button class="btnSearch" (click)="onSearch()">Search</button>
+<button class="button-search" (click)="onSearch()">Search</button>
 
 <div *ngIf="isLoading; else dataContent">
   <p>Loading...</p>
@@ -18,6 +18,7 @@
     <p>{{ errorMessage }}</p>
   </div>
   <ng-template #showData>
+    <div *ngIf="paginatedStories.length > 0; else noStories"></div>
     <div *ngFor="let story of paginatedStories">
       <div>
         <p>
@@ -30,21 +31,24 @@
       </div>
     </div>
   </ng-template>
-
-  <div>
-    <button
-      class="btnPrev"
-      (click)="currentPage = currentPage - 1"
-      [disabled]="currentPage === 1"
-    >
-      Previous
-    </button>
-    <button
-      class="btnNext"
-      (click)="currentPage = currentPage + 1"
-      [disabled]="currentPage * itemsPerPage >= stories.length"
-    >
-      Next
-    </button>
-  </div>
+  <ng-template #noStories>
+    <p>No stories found</p>
+  </ng-template>
 </ng-template>
+
+<div>
+  <button
+    class="button-previous"
+    (click)="currentPage = currentPage - 1"
+    [disabled]="currentPage === 1"
+  >
+    Previous
+  </button>
+  <button
+    class="button-next"
+    (click)="currentPage = currentPage + 1"
+    [disabled]="currentPage * itemsPerPage >= stories.length"
+  >
+    Next
+  </button>
+</div>

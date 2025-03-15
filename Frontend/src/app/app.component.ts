@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error: any) => {
-        this.errorMessage = 'Error fetching data.';
+        this.errorMessage = error.message;
         this.isLoading = false;
       },
     });
