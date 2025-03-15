@@ -20,11 +20,6 @@ namespace HackerNews.Api.Services
                 var response = await _client.GetStringAsync("https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty");
                 var storyIds = JsonConvert.DeserializeObject<List<int>>(response);
 
-                //var tasks = new List<Task<Story>>();
-                //foreach (var storyId in storyIds.Take(100)) {
-                //    tasks.Add(GetStoryAsync(storyId));
-                //}
-
                 var tasks = storyIds.Select(storyId => GetStoryAsync(storyId));
 
                 var stories = await Task.WhenAll(tasks);

@@ -1,12 +1,13 @@
-<h1>HackerNews</h1>
+<h1 class="header-title">Hacker News</h1>
 
 <input
+  class="frmSearch"
   type="text"
   [(ngModel)]="searchQuery"
   placeholder="Search stories"
   (change)="onSearch()"
 />
-<button (click)="onSearch()">Search</button>
+<button class="btnSearch" (click)="onSearch()">Search</button>
 
 <div *ngIf="isLoading; else dataContent">
   <p>Loading...</p>
@@ -24,7 +25,7 @@
           <a *ngIf="story.url" [href]="story.url" target="_blank"
             >click here to view</a
           >
-          <a *ngIf="!story.url">link not avaiable</a>
+          <a *ngIf="!story.url">link not available</a>
         </p>
       </div>
     </div>

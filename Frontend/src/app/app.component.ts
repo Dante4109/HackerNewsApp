@@ -19,8 +19,12 @@ export class AppComponent implements OnInit {
   title = 'Frontend';
   constructor(private hackerNewsService: ApiService) {}
 
-  get paginatedStories() {
-    return this.stories.slice(
+  get paginatedStories(): Story[] {
+    return this.slicedStories(this.stories);
+  }
+
+  slicedStories(stories: Story[]): Story[] {
+    return stories.slice(
       (this.currentPage - 1) * this.itemsPerPage,
       this.currentPage * this.itemsPerPage
     );

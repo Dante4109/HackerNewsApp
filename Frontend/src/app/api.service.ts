@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../environments/environment';
+import { Story } from './story';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,15 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  getNewestStories(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getNewestStories(): Observable<Story[]> {
+    return this.http.get<Story[]>(this.apiUrl).pipe(
+      catchError((error) => {
+        console.error('Error fetching newest stories:', error);
+        return throwError(
+          () =>
+            new Error('Failed to fetch newest stories. Please try again later.')
+        );
+      })
+    );
   }
 }

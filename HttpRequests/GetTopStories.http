@@ -1,2 +1,7 @@
+@HackerNews.Api_HostAddress = http://localhost:5292
 
-Get https://localhost:7244/api/newest
+GET {{HackerNews.Api_HostAddress}}/api/hackernews
+Accept: application/json
+
+###
+
