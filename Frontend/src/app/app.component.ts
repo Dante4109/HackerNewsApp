@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
+import { Story } from './story';
 
 @Component({
   selector: 'app-root',
@@ -8,15 +9,15 @@ import { ApiService } from './api.service';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
-  stories: any[] = [];
-  currentPage = 1;
-  itemsPerPage = 10;
-  isLoading = true;
+  stories: Story[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  isLoading: boolean = true;
   errorMessage: string = '';
   searchQuery: string = '';
 
-  constructor(private hackerNewsService: ApiService) {}
   title = 'Frontend';
+  constructor(private hackerNewsService: ApiService) {}
 
   get paginatedStories() {
     return this.stories.slice(
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadStories();
   }
 }

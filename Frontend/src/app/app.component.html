@@ -32,12 +32,14 @@
 
   <div>
     <button
+      class="btnPrev"
       (click)="currentPage = currentPage - 1"
       [disabled]="currentPage === 1"
     >
       Previous
     </button>
     <button
+      class="btnNext"
       (click)="currentPage = currentPage + 1"
       [disabled]="currentPage * itemsPerPage >= stories.length"
     >
