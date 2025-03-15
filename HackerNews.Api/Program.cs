@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddMemoryCache();
-builder.Services.AddHttpClient<HackerNewsService>();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<HackerNewsService>();
 builder.Services.AddControllers();
 
 // CORS policy

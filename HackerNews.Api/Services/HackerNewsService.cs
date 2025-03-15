@@ -7,20 +7,21 @@ namespace HackerNews.Api.Services
     public class HackerNewsService
     {
         private readonly IMemoryCache _cache;
-        private readonly HttpClient _client;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public HackerNewsService(HttpClient client, IMemoryCache cache) {
-            
-            _client = client;
+        public HackerNewsService(IHttpClientFactory httpClientFactory, IMemoryCache cache) {
+            _httpClientFactory = httpClientFactory;
             _cache = cache;
         }
 
         public async Task<List<Story>> GetNewestStoriesAsync() {
             if (!_cache.TryGetValue("newestStories", out List<Story> cachedStories)) {
-                var response = await _client.GetStringAsync("https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty");
+                var client = _httpClientFactory.CreateClient();
+
+                var response = await client.GetStringAsync("https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty");
                 var storyIds = JsonConvert.DeserializeObject<List<int>>(response);
 
-                var tasks = storyIds.Select(storyId => GetStoryAsync(storyId));
+                var tasks = storyIds.Select(storyId => GetStoryAsync(storyId, client));
 
                 var stories = await Task.WhenAll(tasks);
                 cachedStories = stories.ToList();
@@ -34,8 +35,8 @@ namespace HackerNews.Api.Services
             return cachedStories;
         }
 
-        public async Task<Story> GetStoryAsync(int storyId) {
-            var response = await _client.GetStringAsync($"https://hacker-news.firebaseio.com/v0/item/{storyId}.json?print=pretty");
+        public async Task<Story> GetStoryAsync(int storyId, HttpClient client) {
+            var response = await client.GetStringAsync($"https://hacker-news.firebaseio.com/v0/item/{storyId}.json?print=pretty");
             return JsonConvert.DeserializeObject<Story>(response);
         }
     }

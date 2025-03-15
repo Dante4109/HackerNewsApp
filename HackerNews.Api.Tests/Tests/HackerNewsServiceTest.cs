@@ -1,85 +1,76 @@
-﻿using HackerNews.Api.Services;
+﻿using Moq;
+using Moq.Contrib.HttpClient;
 using Microsoft.Extensions.Caching.Memory;
-using Moq;
-using Moq.Protected;
-using Newtonsoft.Json.Linq;
-using System.Net;
+using Newtonsoft.Json;
+using Xunit;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Xunit;
+using System.Collections.Generic;
+using HackerNews.Api.Services;
 
-namespace HackerNews.Api.Tests.Tests;
-
-public class HackerNewsServiceTests
+namespace HackerNews.Api.Tests
 {
-    //private readonly HttpClient _httpClient;
-    //private readonly HackerNewsService _hackerNewsService;
-    private readonly IMemoryCache _cache;
-
-    //public HackerNewsServiceTests() {
-    //    HttpClient = new HttpClient _httpClient;
-    //    _hackerNewsService = new HackerNewsService(_mockHttpClient.Object, _cache);
-    //}
-
-
-    [Fact]
-    public async Task GetNewStoriesAsync_ReturnsStories() {
+    public class HackerNewsServiceTests
+    {
         // Arrange
-        var expectedResponse = "[1, 2, 3]";
+        private readonly IMemoryCache _memoryCache;
+        private readonly HttpClient _httpClient;
+        private readonly HackerNewsService _hackerNewsService;
 
-        var mockHandler = new Mock<HttpMessageHandler>();
+        public HackerNewsServiceTests() {
+            _memoryCache = new MemoryCache(new MemoryCacheOptions());
 
-        //var mockResponse = new HttpResponseMessage(HttpStatusCode.OK) {
-        //    Content = new StringContent("[1, 2, 3]")
-        //};
+            // Create a mock HttpClient using Moq.Contrib.HttpClient
+            var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
-        mockHandler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>()
-                )
-                .ReturnsAsync(new HttpResponseMessage {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(expectedResponse)
-                });
+            // Setup mock response for the /newstories.json endpoint
+            mockHttpMessageHandler
+                .SetupRequest(HttpMethod.Get, "https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty")
+                .ReturnsResponse("[1, 2, 3]"); // Returning a mock list of story IDs
 
-        var httpClient = new HttpClient(mockHandler.Object);
+            // Setup mock response for each individual story endpoint
+            mockHttpMessageHandler
+                .SetupRequest(HttpMethod.Get, "https://hacker-news.firebaseio.com/v0/item/1.json?print=pretty")
+                .ReturnsResponse("{\"id\": 1, \"title\": \"Story 1\", \"url\": \"www.story1.com\"}");
+            mockHttpMessageHandler
+                .SetupRequest(HttpMethod.Get, "https://hacker-news.firebaseio.com/v0/item/2.json?print=pretty")
+                .ReturnsResponse("{\"id\": 2, \"title\": \"Story 2\", \"url\": \"www.story2.com\"}");
+            mockHttpMessageHandler
+                .SetupRequest(HttpMethod.Get, "https://hacker-news.firebaseio.com/v0/item/3.json?print=pretty")
+                .ReturnsResponse("{\"id\": 3, \"title\": \"Story 3\", \"url\": \"www.story3.com\"}");
 
-        //var mockHandler = new MockHttpMessageHandler(mockResponse);
-        //_httpClient = new HttpClient(mockHandler);
-        
-        var service = new HackerNewsService(httpClient, new MemoryCache(new MemoryCacheOptions()));
+            // Create HttpClient using the mock handler
+            _httpClient = mockHttpMessageHandler.CreateClient();
 
-        // Act
-        var result = await service.GetNewestStoriesAsync();
+            // Initialize HackerNewsService
+            _hackerNewsService = new HackerNewsService(new HttpClientFactoryMock(_httpClient), _memoryCache);
+        }
 
-        // Assert
-        Assert.NotNull(result);
-        // Assert.Equal(3, result.Count);
+        [Fact]
+        public async Task GetNewestStoriesAsync_Returns_Correct_Stories() {
+            // Act
+            var stories = await _hackerNewsService.GetNewestStoriesAsync();
+
+            // Assert
+            Assert.NotNull(stories);
+            Assert.Equal(3, stories.Count);
+            Assert.Equal("Story 1", stories[0].Title);
+            Assert.Equal("Story 2", stories[1].Title);
+            Assert.Equal("Story 3", stories[2].Title);
+        }
     }
 
-    //[Fact]
-    //public async Task GetStoryAsync_ReturnsStory() {
-    //    // Arrange
-    //    var fakeStory = new JObject
-    //    {
-    //        { "id", 1 },
-    //        { "title", "Fake Story" },
-    //        { "url", "https://example.com" }
-    //    };
+    // Mock IHttpClientFactory implementation
+    public class HttpClientFactoryMock : IHttpClientFactory
+    {
+        private readonly HttpClient _httpClient;
 
-    //    _mockHttpClient
-    //        .Setup(client => client.GetStringAsync(It.IsAny<string>()))
-    //        .ReturnsAsync(fakeStory.ToString());
+        public HttpClientFactoryMock(HttpClient httpClient) {
+            _httpClient = httpClient;
+        }
 
-    //    // Act
-    //    var result = await _hackerNewsService.GetStoryAsync(1);
-
-    //    // Assert
-    //    Assert.NotNull(result);
-    //    Assert.Equal("Fake Story", result.Title.ToString());
-    //    Assert.Equal("https://example.com", result.Url.ToString());
-    //}
+        public HttpClient CreateClient(string name = null) {
+            return _httpClient;
+        }
+    }
 }
