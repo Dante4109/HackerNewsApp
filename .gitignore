@@ -8,6 +8,7 @@
 
 # personal files
 .scrap.md
+/unused/*
 
 # User-specific files
 *.rsuser
