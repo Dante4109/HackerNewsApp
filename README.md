@@ -16,7 +16,7 @@ Ensure your system has the following installed:
 ### Open a terminal and run:
 
 ```sh
-git clone https://github.com/your-repository/your-project.git
+git clone https://github.com/Dante4109/HackerNewsApp.git
 
 cd HackerNewsApp
 ```
@@ -26,7 +26,7 @@ cd HackerNewsApp
 ## Navigate to the **Backend** directory
 
 ```sh
-cd ../Backend
+cd Backend
 ```
 
 ### Restore Dependencies
@@ -60,7 +60,7 @@ dotnet run
 ### Navigate to the **Frontend** folder:
 
 ```sh
-cd ../Frontend
+cd Frontend
 ```
 
 ### Install Dependencies
