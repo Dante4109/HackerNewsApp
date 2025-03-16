@@ -1,14 +1,25 @@
-name: Deploy .NET Backend
+name: Deploy .NET Backend simple
 
 on:
+  workflow_dispatch: # Allow manual triggering from GitHub UI
   push:
     branches:
       - main
     paths:
       - "Backend/**"
 
+# Environment variables used throughout the workflow
+env:
+  AZURE_WEBAPP_NAME: hackernews-backend
+  AZURE_WEBAPP_PACKAGE_PATH: ".Backend/HackerNews.Api/publish"
+  DOTNET_VERSION: "9.x"
+  SOLUTION_PATH: "Backend/HackerNews.Api.sln"
+  API_PROJECT_PATH: "Backend/HackerNews.Api"
+  PUBLISH_DIR: "./publish"
+
 jobs:
   build-and-deploy:
+    name: Deploy .NET Backend
     runs-on: ubuntu-latest
 
     steps:
