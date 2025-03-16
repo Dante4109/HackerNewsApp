@@ -77,7 +77,7 @@ to match the localhost address from the backend api
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: "https://localhost:5292/api/hackernews",
+  apiUrl: "http://localhost:5292/api/hackernews",
 };
 ```
 
