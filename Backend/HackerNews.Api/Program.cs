@@ -9,9 +9,6 @@ builder.Services.Configure<HackerNewsApiSettings>(builder.Configuration.GetSecti
 builder.Services.AddSingleton<HackerNewsApiSettings>(sp => sp.GetRequiredService<IOptions<HackerNewsApiSettings>>().Value);
 builder.Services.AddSingleton<IHackerNewsService, HackerNewsService>();
 
-var apiSettings = builder.Configuration.GetSection("HackerNewsApiSettings").Get<HackerNewsApiSettings>();
-Console.WriteLine($"BaseUrl: {apiSettings.StoryUrl}");
-
 // Register other services
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
