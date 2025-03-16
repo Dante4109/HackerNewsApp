@@ -26,8 +26,9 @@ describe('ApiService', () => {
 
   it('should make a GET request to fetch newest stories', () => {
     const mockStories: Story[] = new Array(100).fill(null).map((_, index) => ({
+      id: index + 1,
       title: `Story ${index + 1}`,
-      url: (index + 1) % 10 === 0 ? '' : `https://Story ${index + 1}.com`,
+      url: (index + 1) % 10 === 0 ? '' : `https://story ${index + 1}.com`,
       // Set URL to "" for every 10th item
     }));
 

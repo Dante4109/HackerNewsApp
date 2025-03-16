@@ -1,13 +1,20 @@
 using HackerNews.Api.Services;
+using Microsoft.Extensions.Options;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 // Add services to the container
+builder.Services.Configure<HackerNewsApiSettings>(builder.Configuration.GetSection("HackerNewsApiSettings"));
+builder.Services.AddSingleton<HackerNewsApiSettings>(sp => sp.GetRequiredService<IOptions<HackerNewsApiSettings>>().Value);
+builder.Services.AddSingleton<IHackerNewsService, HackerNewsService>();
+
+var apiSettings = builder.Configuration.GetSection("HackerNewsApiSettings").Get<HackerNewsApiSettings>();
+Console.WriteLine($"BaseUrl: {apiSettings.StoryUrl}");
+
+// Register other services
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<HackerNewsService>();
 builder.Services.AddControllers();
 
 // CORS policy
