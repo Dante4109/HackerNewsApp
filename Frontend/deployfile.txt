@@ -1,1 +1,1 @@
-I'm a file you edit when you want to trigger a Github CI/CD deploy
+I'm a file you edit when you want to trigger a Github CI/CD deploys
