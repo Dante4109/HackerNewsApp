@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-api.azurewebsites.net', // Replace with your Azure API URL
+  apiUrl:
+    'https://hackernews-backend-evhsgzhufahfb4ge.canadacentral-01.azurewebsites.net/api/hackernews', // Replace with your Azure API URL
 };
