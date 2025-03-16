@@ -1,0 +1,13 @@
+@HackerNews.Api_HostAddress = http://localhost:5292
+
+GET {{HackerNews.Api_HostAddress}}/api/hackernews/
+Accept: application/json
+
+###
+
+var mockSettings = Options.Create(new HackerNewsApiSettings
+{
+    NewestStoriesUrl = "https://hacker-news.firebaseio.com/v0/newstories.json?print=pretty",
+    StoryUrl = "https://hacker-news.firebaseio.com/v0/item/"
+});
+_hackerNewsService = new HackerNewsService(new HttpClientFactoryMock(_httpClient), _memoryCache, mockSettings);

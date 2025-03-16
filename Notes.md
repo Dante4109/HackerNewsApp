@@ -27,3 +27,5 @@ Angular Frontend
 - Add buttons to switch between pages
 - Test to confirm pages change each time.
 - Add search function using the forms module.
+- Implement Jasmine UI tests
+- Implements Jasmine ApiService tests
