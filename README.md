@@ -124,7 +124,7 @@ dotnet test
 Change directory to **Frontend**
 
 ```sh
-cd ../Backend/HackerNews.Api.Tests
+cd ../Frontend
 ```
 
 ### Run Tests
