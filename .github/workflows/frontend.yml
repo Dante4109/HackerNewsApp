@@ -24,6 +24,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Clear old dist (if exists)
+        run: rm -rf Frontend/dist
 
       - name: Install Dependencies
         run: npm ci
@@ -37,5 +42,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: Frontend/dist/
+          package: Frontend/dist/frontend/browser
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
