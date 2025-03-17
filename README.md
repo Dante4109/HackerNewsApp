@@ -2,6 +2,8 @@
 
 ## Full Stack Code Challenge.
 
+### :rocket: View the app on Azure here --> https://hackernews-frontend.azurewebsites.net/ 
+
 ## Prerequisites
 
 Ensure your system has the following installed:
