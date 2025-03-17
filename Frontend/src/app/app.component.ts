@@ -24,6 +24,10 @@ export class AppComponent implements OnInit {
     return this.slicedStories(this.stories);
   }
 
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.stories.length / this.itemsPerPage));
+  }
+
   slicedStories(stories: Story[]): Story[] {
     return stories.slice(
       (this.currentPage - 1) * this.itemsPerPage,
