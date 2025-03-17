@@ -23,12 +23,6 @@ jobs:
         with:
           dotnet-version: "9.x"
 
-      - name: navigate to the Backend folder
-        run: cd Backend
-
-      - name: navigate to the project folder
-        run: cd HackerNews.Api
-
       - name: Build with dotnet
         run: dotnet build --configuration Release
 

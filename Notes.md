@@ -29,3 +29,9 @@ Angular Frontend
 - Add search function using the forms module.
 - Implement Jasmine UI tests
 - Implements Jasmine ApiService tests
+
+- Deployment to Azure
+
+- Create resource group HackerNews
+- Create hackernews-frontend web app
+- Create hackernews-backend web s

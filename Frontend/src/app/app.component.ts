@@ -9,7 +9,8 @@ import { Story } from './story';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
-  stories: Story[] = [];
+  allStories: Story[] = []; // Store all stories once loaded
+  stories: Story[] = []; // Displayed stories (filtered results)
   currentPage: number = 1;
   itemsPerPage: number = 10;
   isLoading: boolean = true;
@@ -32,8 +33,9 @@ export class AppComponent implements OnInit {
 
   loadStories(): void {
     this.hackerNewsService.getNewestStories().subscribe({
-      next: (data: any) => {
-        this.stories = data;
+      next: (data: Story[]) => {
+        this.allStories = data; // Store all stories
+        this.stories = [...this.allStories]; // Initialize displayed stories
         this.isLoading = false;
       },
       error: (error: any) => {
@@ -44,11 +46,16 @@ export class AppComponent implements OnInit {
   }
 
   onSearch(): void {
-    this.hackerNewsService.getNewestStories().subscribe((data: any) => {
-      this.stories = data.filter((story: { title: string | string[] }) => {
-        return story.title.includes(this.searchQuery);
-      });
-    });
+    if (!this.searchQuery.trim()) {
+      // If search query is empty, show all stories again
+      this.stories = [...this.allStories];
+    } else {
+      // Filter locally from allStories
+      this.stories = this.allStories.filter((story: Story) =>
+        story.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
+    this.currentPage = 1; // Reset to first page after searching
   }
 
   ngOnInit(): void {
