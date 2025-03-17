@@ -13,7 +13,7 @@ Ensure your system has the following installed:
 - [.NET 9 SDK](https://dotnet.microsoft.com/)
 - [Git](https://git-scm.com/)
 
-# 1. Clone the Repository
+## 1. Clone the Repository
 
 ### Open a terminal and run:
 
@@ -23,7 +23,7 @@ git clone https://github.com/Dante4109/HackerNewsApp.git
 cd HackerNewsApp
 ```
 
-# 2. Backend Setup (.NET 9)
+## 2. Backend Setup (.NET 9)
 
 ## Navigate to the **Backend** directory
 
@@ -97,13 +97,13 @@ ng serve
 ng test
 ```
 
-# 4. Verify Everything Works
+## 4. Verify Everything Works
 
 - Open http://localhost:4200/ in your browser.
 - Ensure the frontend connects to the backend properly.
 - Check the console/logs for any errors.
 
-# 5. Run Tests
+## 5. Run Tests
 
 - ### Backend Tests:
 
