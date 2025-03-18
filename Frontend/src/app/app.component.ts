@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
 import { Story } from './story';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +18,7 @@ export class AppComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string = '';
   searchQuery: string = '';
+  searchControl = new FormControl('');
 
   title = 'Frontend';
   constructor(private hackerNewsService: ApiService) {}
@@ -64,5 +67,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStories();
+
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((query) => {
+        this.searchQuery = query || '';
+        this.onSearch();
+      });
   }
 }
