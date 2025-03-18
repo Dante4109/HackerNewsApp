@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import { delay, of } from 'rxjs';
 import { ApiService } from './api.service';
 
 class MockApiService {
@@ -57,16 +57,21 @@ describe('AppComponent', () => {
     expect(component.stories.length).toBe(100);
   });
 
-  it('should show loading message when isLoading is true', () => {
-    component.isLoading = true;
+  it('should show a loading message when async pipe has not yet loaded data', () => {
+    spyOn(apiService, 'getNewestStories').and.returnValue(
+      of([]).pipe(delay(1000))
+    ); // Simulate delay
+    component.ngOnInit();
     fixture.detectChanges();
     const loadingElement = fixture.debugElement.query(By.css('p'));
     expect(loadingElement.nativeElement.textContent).toEqual('Loading...');
   });
 
-  it('should display an error message when errorMessage is set', () => {
-    component.errorMessage =
-      'Failed to fetch newest stories. Please try again later.';
+  it('should display an error message when the API fails to fetch data', () => {
+    spyOn(apiService, 'getNewestStories').and.throwError(
+      'Failed to fetch newest stories. Please try again later.'
+    );
+    component.ngOnInit();
     fixture.detectChanges();
     const errorElement = fixture.debugElement.query(By.css('p'));
     expect(errorElement.nativeElement.textContent).toContain(
