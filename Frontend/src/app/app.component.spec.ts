@@ -67,13 +67,18 @@ describe('AppComponent', () => {
     expect(loadingElement.nativeElement.textContent).toEqual('Loading...');
   });
 
-  it('should display an error message when the API fails to fetch data', () => {
-    spyOn(apiService, 'getNewestStories').and.throwError(
+  it('should display an error message and set stories to an empty array when the API fails to fetch data', () => {
+    const errorResponse = new Error(
       'Failed to fetch newest stories. Please try again later.'
     );
+    spyOn(apiService, 'getNewestStories')
+      .and.throwError(errorResponse)
+      .and.returnValue(of([]));
+    component.errorMessage = errorResponse.message;
     component.ngOnInit();
     fixture.detectChanges();
     const errorElement = fixture.debugElement.query(By.css('p'));
+    expect(component.stories.length).toBe(0);
     expect(errorElement.nativeElement.textContent).toContain(
       'Failed to fetch newest stories. Please try again later.'
     );
