@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
 import { Story } from './story';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  tap,
+} from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +17,13 @@ import { Story } from './story';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
-  allStories: Story[] = []; // Store all stories once loaded
+  allStories$: Observable<Story[]> = of([]); // Store all stories once loaded
   stories: Story[] = []; // Displayed stories (filtered results)
   currentPage: number = 1;
   itemsPerPage: number = 10;
-  isLoading: boolean = true;
   errorMessage: string = '';
   searchQuery: string = '';
+  searchControl = new FormControl('');
 
   title = 'Frontend';
   constructor(private hackerNewsService: ApiService) {}
@@ -36,33 +44,38 @@ export class AppComponent implements OnInit {
   }
 
   loadStories(): void {
-    this.hackerNewsService.getNewestStories().subscribe({
-      next: (data: Story[]) => {
-        this.allStories = data; // Store all stories
-        this.stories = [...this.allStories]; // Initialize displayed stories
-        this.isLoading = false;
-      },
-      error: (error: any) => {
+    this.allStories$ = this.hackerNewsService.getNewestStories().pipe(
+      tap((data: Story[]) => {
+        this.stories = [...data]; // Assign data to stories
+      }),
+      catchError((error) => {
         this.errorMessage = error.message;
-        this.isLoading = false;
-      },
-    });
+        return of([]); // Return an empty array to keep the app stable
+      })
+    );
   }
 
   onSearch(): void {
     if (!this.searchQuery.trim()) {
-      // If search query is empty, show all stories again
-      this.stories = [...this.allStories];
+      this.allStories$.subscribe((stories) => (this.stories = [...stories]));
     } else {
-      // Filter locally from allStories
-      this.stories = this.allStories.filter((story: Story) =>
-        story.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
+      this.allStories$.subscribe((stories) => {
+        this.stories = stories.filter((story: Story) =>
+          story.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      });
     }
-    this.currentPage = 1; // Reset to first page after searching
+    this.currentPage = 1; // Reset pagination
   }
 
   ngOnInit(): void {
     this.loadStories();
+
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((query) => {
+        this.searchQuery = query || '';
+        this.onSearch();
+      });
   }
 }

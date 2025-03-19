@@ -9,29 +9,29 @@
 />
 <button class="button-search" (click)="onSearch()">Search</button>
 
-<div *ngIf="isLoading; else dataContent">
-  <p>Loading...</p>
-</div>
+<ng-container *ngIf="allStories$ | async as stories; else loading">
+  <ng-container *ngIf="paginatedStories.length > 0; else noStories">
+    <div *ngFor="let story of paginatedStories">
+      <p>
+        {{ story.title }}
+        <a *ngIf="story.url" [href]="story.url" target="_blank"
+          >click here to view</a
+        >
+        <a *ngIf="!story.url">link not available</a>
+      </p>
+    </div>
+  </ng-container>
+</ng-container>
 
-<ng-template #dataContent>
-  <div *ngIf="errorMessage; else showData">
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>
+
+<ng-template #noStories>
+  <div *ngIf="errorMessage; else noData">
     <p>{{ errorMessage }}</p>
   </div>
-  <ng-template #showData>
-    <div *ngIf="paginatedStories.length > 0; else noStories"></div>
-    <div *ngFor="let story of paginatedStories">
-      <div>
-        <p>
-          {{ story.title }}
-          <a *ngIf="story.url" [href]="story.url" target="_blank"
-            >click here to view</a
-          >
-          <a *ngIf="!story.url">link not available</a>
-        </p>
-      </div>
-    </div>
-  </ng-template>
-  <ng-template #noStories>
+  <ng-template #noData>
     <p>No stories found</p>
   </ng-template>
 </ng-template>
