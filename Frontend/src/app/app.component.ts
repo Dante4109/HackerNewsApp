@@ -21,7 +21,6 @@ export class AppComponent implements OnInit {
   stories: Story[] = []; // Displayed stories (filtered results)
   currentPage: number = 1;
   itemsPerPage: number = 10;
-  isLoading: boolean = true;
   errorMessage: string = '';
   searchQuery: string = '';
   searchControl = new FormControl('');
@@ -48,11 +47,9 @@ export class AppComponent implements OnInit {
     this.allStories$ = this.hackerNewsService.getNewestStories().pipe(
       tap((data: Story[]) => {
         this.stories = [...data]; // Assign data to stories
-        this.isLoading = false;
       }),
       catchError((error) => {
         this.errorMessage = error.message;
-        this.isLoading = false;
         return of([]); // Return an empty array to keep the app stable
       })
     );
